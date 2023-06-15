@@ -1,8 +1,9 @@
-import time
 from faker import Faker
+from pages.AccountPage import AccountPage
 from pages.AddCustomerPage import AddCustomerPage
 from pages.BankManagerPage import BankManagerPage
 from pages.CustomerLoginPage import CustomerLoginPage
+from pages.ListCustomersPage import ListCustomersPage
 from pages.OpenAccountPage import OpenAccountPage
 
 
@@ -13,8 +14,9 @@ class Test1:
         first_name = generator.unique.first_name()
         last_name = generator.unique.last_name()
         post_code = generator.postcode()
-        open_home.clicar_em_bank_manager_login()
+        open_home.click_on_bank_manager_login()
         bank_manager_page = BankManagerPage(open_home.driver)
+        assert bank_manager_page.is_url_page(), "A url está diferente do esperado"
         bank_manager_page.clicar_em_add_customer()
         add_customer_page = AddCustomerPage(bank_manager_page.driver)
         assert add_customer_page.is_form_displayed(), "O formulário não foi exibido"
@@ -23,19 +25,38 @@ class Test1:
         add_customer_page.accept_alert()
 
     def test_logar_com_usuario_que_nao_tem_uma_conta_associada(self, create_customer):
-        create_customer[0].clicar_customer_login()
+        home_page = create_customer[0]
+        home_page.open_home_page()
+        home_page.click_on_customer_login()
+        user = ""+create_customer[1]+" "+create_customer[2]
         customer_login_page = CustomerLoginPage(create_customer[0].driver)
-        customer_login_page.select_user("Customer Sem Account Teste")
+        customer_login_page.select_user(user)
         customer_login_page.click_on_login()
-        time.sleep(5)
+        account_page = AccountPage(customer_login_page.driver)
+        assert account_page.is_msg_welcome_user_displayed(user), "Nome do usuário diferente do esperado"
+        assert account_page.is_msg_plese_open_an_account_displayed(), "Mensagem diferente do esperado"
 
-    def test_criar_conta_para_usuario_com_currency_dollar(self,open_home):
-        open_home.clicar_em_bank_manager_login()
-        bank_manager_page = BankManagerPage(open_home.driver)
+    def test_criar_conta_para_usuario_com_currency_dollar(self,create_customer):
+        home_page = create_customer[0]
+        user = "" + create_customer[1] + " " + create_customer[2]
+        home_page.open_home_page()
+        home_page.click_on_bank_manager_login()
+        bank_manager_page = BankManagerPage(home_page.driver)
+        assert bank_manager_page.is_url_page(), "A url está diferente do esperado"
         bank_manager_page.click_on_open_account()
         open_account_page = OpenAccountPage(bank_manager_page.driver)
-        open_account_page.select_customer("Ron Weasly")
+        open_account_page.select_customer(user)
         open_account_page.select_currency("Dollar")
         open_account_page.click_on_process()
         assert open_account_page.msg_account_created_sucessfully_displayed(), "O alerta não foi exibido ou o texto exibido no alerta está diferente do esperado"
+    def test_delete_customers(self, create_customer):
+        home_page = create_customer[0]
+        first_name = create_customer[1]
+        home_page.click_on_customers()
+        list_customers_page = ListCustomersPage(home_page.driver)
+        list_customers_page.is_table_with_list_of_customers_displayed(), "Tabela não foi exibida"
+        list_customers_page.search_customer(first_name)
+        list_customers_page.click_on_delete()
+        list_customers_page.clear_search_customer()
+        assert list_customers_page.the_name_is_no_longer_on_the_customer_list(first_name), "O nome continua presente na lista"
 

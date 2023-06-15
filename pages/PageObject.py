@@ -28,11 +28,13 @@ class PageObject:
     def close(self):
         self.driver.quit()
 
-    def is_page(self, url, title):
-        is_url = self.driver.current_url == url
-        is_title = self.driver.find_element(By.CLASS_NAME, self.class_title).text == title
-        return is_url and is_title
+    def is_url(self, url):
+        return self.driver.current_url == url
 
     def wait_alert_is_present(self):
         alert = WebDriverWait(self.driver, 15).until(expected_conditions.alert_is_present())
         return alert
+    def click_on_home_button(self):
+        self.driver.find_element(By.CSS_SELECTOR, "[ng-click='home()']").click()
+
+

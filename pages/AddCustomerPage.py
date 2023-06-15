@@ -36,7 +36,3 @@ class AddCustomerPage(PageObject):
 
     def is_form_displayed(self):
         return self.driver.find_element(By.CSS_SELECTOR, "[name=myForm]").is_displayed()
-
-
-
-
