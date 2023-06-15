@@ -6,6 +6,7 @@ from pages.CustomerLoginPage import CustomerLoginPage
 from pages.DepositPage import DepositPage
 from pages.ListCustomersPage import ListCustomersPage
 from pages.OpenAccountPage import OpenAccountPage
+from pages.WithdrawlPage import WithdrawlPage
 
 
 class Test1:
@@ -50,6 +51,7 @@ class Test1:
         open_account_page.select_currency("Dollar")
         open_account_page.click_on_process()
         assert open_account_page.msg_account_created_sucessfully_displayed(), "O alerta não foi exibido ou o texto exibido no alerta está diferente do esperado"
+
     def test_delete_customers(self, create_customer):
         home_page = create_customer[0]
         first_name = create_customer[1]
@@ -61,23 +63,28 @@ class Test1:
         list_customers_page.clear_search_customer()
         assert list_customers_page.the_name_is_no_longer_on_the_customer_list(first_name), "O nome continua presente na lista"
 
-    def test_realizar_deposito(self, create_account_with_dollar):
+    def test_realizar_deposito(self, create_an_account_with_dollar_and_login):
         value_balance_inicial = '0'
         new_value_balance = '300'
-        home_page = create_account_with_dollar[0]
-        user = create_account_with_dollar[1]
-        home_page.open_home_page()
-        home_page.click_on_customer_login()
-        customer_login_page = CustomerLoginPage(home_page.driver)
-        customer_login_page.select_user(user)
-        customer_login_page.click_on_login()
-        account_page = AccountPage(customer_login_page.driver)
-        assert account_page.is_msg_welcome_user_displayed(user), "Nome do usuário diferente do esperado"
+        account_page = AccountPage(create_an_account_with_dollar_and_login.driver)
         assert account_page.is_value_balance(value_balance_inicial), "Valor diferente do esperado"
         account_page.click_on_deposit()
         deposit_page = DepositPage(account_page.driver)
         deposit_page.amount_to_be_deposited(new_value_balance)
         deposit_page.click_on_deposit()
-        assert deposit_page.validated_message_deposit_success(), "Depósito não efetuado ou mensgem incorreta"
+        assert deposit_page.validated_message_deposit_success(), "Depósito não efetuado ou mensagem incorreta"
         assert account_page.is_value_balance(new_value_balance), "Valor diferente do esperado"
+
+    def test_tentar_realizar_saque_de_um_valor_maior_que_o_saldo_atual(self, create_an_account_with_dollar_and_login):
+        value_balance_inicial = '0'
+        value_debit = '40'
+        account_page = AccountPage(create_an_account_with_dollar_and_login.driver)
+        assert account_page.is_value_balance(value_balance_inicial), "Valor diferente do esperado"
+        account_page.click_on_withdrawl()
+        withdrawl_page = WithdrawlPage(account_page.driver)
+        withdrawl_page.set_amount(value_debit)
+        withdrawl_page.send_withdraw()
+        assert withdrawl_page.is_msg_transaction_failed_displayed(), "Não foi exibido a mensagem ou a mensagem exibida é diferente do esperado."
+
+
 

@@ -19,4 +19,6 @@ class AccountPage(PageObject):
 
     def is_value_balance(self, value):
         return self.driver.find_element(By.CSS_SELECTOR, ".ng-scope [ng-hide=noAccount] .ng-binding:nth-child(2)").text == value
+    def click_on_withdrawl(self):
+        self.driver.find_element(By.CSS_SELECTOR, "[ng-click='withdrawl()']").click()
 

@@ -1,6 +1,7 @@
 import pytest
 from faker import Faker
 
+from pages.AccountPage import AccountPage
 from pages.AddCustomerPage import AddCustomerPage
 from pages.BankManagerPage import BankManagerPage
 from pages.CustomerLoginPage import CustomerLoginPage
@@ -51,4 +52,19 @@ def create_account_with_dollar(create_customer):
     open_account_page.click_on_process()
     open_account_page.accept_alert()
     yield [home_page, user]
+
+@pytest.fixture()
+def create_an_account_with_dollar_and_login(create_account_with_dollar):
+    home_page = create_account_with_dollar[0]
+    user = create_account_with_dollar[1]
+    home_page.open_home_page()
+    home_page.click_on_customer_login()
+    customer_login_page = CustomerLoginPage(home_page.driver)
+    customer_login_page.select_user(user)
+    customer_login_page.click_on_login()
+    account_page = AccountPage(customer_login_page.driver)
+    assert account_page.is_msg_welcome_user_displayed(user), "Nome do usuário diferente do esperado"
+    yield account_page
+
+
 
