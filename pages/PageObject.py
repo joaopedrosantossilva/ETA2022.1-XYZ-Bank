@@ -34,6 +34,9 @@ class PageObject:
     def wait_alert_is_present(self):
         alert = WebDriverWait(self.driver, 15).until(expected_conditions.alert_is_present())
         return alert
+    def accept_alert(self):
+        self.wait_alert_is_present().accept()
+
     def click_on_home_button(self):
         self.driver.find_element(By.CSS_SELECTOR, "[ng-click='home()']").click()
 

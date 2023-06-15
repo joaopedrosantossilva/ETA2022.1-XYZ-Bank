@@ -31,8 +31,5 @@ class AddCustomerPage(PageObject):
         msg = "Customer added successfully with customer id :"
         return msg in self.wait_alert_is_present().text
 
-    def accept_alert(self):
-        self.wait_alert_is_present().accept()
-
     def is_form_displayed(self):
         return self.driver.find_element(By.CSS_SELECTOR, "[name=myForm]").is_displayed()
