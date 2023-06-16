@@ -128,7 +128,7 @@ class Test1:
         withdrawl_page.set_amount(value_saque)
         withdrawl_page.send_withdrawl()
         assert withdrawl_page.is_msg_transaction_success_displayed(), "Mensagem de sucesso na transação não exibida!"
-        time.sleep(2)
+        time.sleep(1)
         account_page.click_on_transactions()
         transactions_page = TransactionsPage(withdrawl_page.driver)
         assert transactions_page.verificar_tabela_amount_transaction_type("1", ""+value_deposito+"", "Credit")
@@ -142,7 +142,7 @@ class Test1:
         deposit_page.amount_to_be_deposited(value_deposito)
         deposit_page.click_on_deposit()
         assert deposit_page.validated_message_deposit_success(), "Depósito não efetuado ou mensagem incorreta"
-        time.sleep(2)
+        time.sleep(1)
         account_page.click_on_transactions()
         transactions_page = TransactionsPage(deposit_page.driver)
         assert transactions_page.verificar_tabela_amount_transaction_type("1", "300", "Credit"), "Valores diferentes do esperado"
