@@ -12,7 +12,7 @@
   - pip install webdriver-manager
   - pip install selenium         
   - pip install pytest    
-4 - Executar os testes do projeto
+4. Executar os testes do projeto
 
 ### Cenários
 - [x] Criar usuario
