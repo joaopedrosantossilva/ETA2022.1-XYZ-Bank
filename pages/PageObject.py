@@ -8,7 +8,8 @@ from webdriver_manager.firefox import GeckoDriverManager
 
 
 class PageObject:
-    class_title = 'title'
+    # Locators
+    css_selector_home_button = "[ng-click='home()']"
 
     def __init__(self, driver=None, browser=None):
         if driver:
@@ -21,7 +22,7 @@ class PageObject:
                 service = Service(executable_path=GeckoDriverManager().install())
                 self.driver = webdriver.Firefox(service=service)
             else:
-                raise Exception('Browser não supportado!!')
+                raise Exception('Browser não suportado!!')
             self.driver.implicitly_wait(15)
             self.driver.maximize_window()
 
@@ -34,10 +35,9 @@ class PageObject:
     def wait_alert_is_present(self):
         alert = WebDriverWait(self.driver, 15).until(expected_conditions.alert_is_present())
         return alert
+
     def accept_alert(self):
         self.wait_alert_is_present().accept()
 
     def click_on_home_button(self):
-        self.driver.find_element(By.CSS_SELECTOR, "[ng-click='home()']").click()
-
-
+        self.driver.find_element(By.CSS_SELECTOR, self.css_selector_home_button).click()
