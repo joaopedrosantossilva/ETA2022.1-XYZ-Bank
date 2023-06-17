@@ -22,7 +22,7 @@
 - [x] Tentar realizar saque de um valor maior que o saldo atual
 - [x] Realizar depósito
 - [x] Realizar saque
-- [x] Validar historico de transação de depósito
+- [x] Validar historico de transação de depósito e débito
 - [x] Resetar transação
 
 ### Tecnologias
